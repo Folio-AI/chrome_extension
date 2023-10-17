@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "Folio AI Extension",
+  "version": "1.0",
+  "description": "Job Application copilot",
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "images/icon.png",
+      "48": "images/icon.png",
+      "128": "images/icon.png"
+    }
+  },
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://*.myworkdayjobs.com/*",
+    "https://*.lever.co/*",
+    "https://*.smartrecruiters.com/",
+    "https://*.greenhouse.io/"
+  ]
+}
+

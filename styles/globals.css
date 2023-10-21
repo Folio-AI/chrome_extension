@@ -1,0 +1,23 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities'; 
+
+
+/* Your existing global styles */
+
+/* #sidebar * {
+    all: initial !important;
+} */
+
+#sidebar {
+    box-sizing: border-box;
+    z-index: 1000000000000;
+}
+
+/* Reset margin and padding for html and body */
+html, body {
+    margin: 0;
+    padding: 0;
+}
+  
+

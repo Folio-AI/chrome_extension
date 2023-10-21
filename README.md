@@ -2,6 +2,8 @@
 
     npm run dev
 
+The Chrome extension files are located in _out_ after running _npm run build_ or _npm run dev_.
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started

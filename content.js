@@ -1146,6 +1146,7 @@ const keywords = [
     "ntp",
     "nunit",
     "nuxt.js",
+    "nvidia",
     "nx-os",
     "oauth",
     "oauth 2.0",
@@ -1511,7 +1512,6 @@ const keywords = [
     "saas attribution modeling",
     "saas models outcome-based models",
     "saas product",
-    "salesforce",
     "salesforce app exchange",
     "salesforce crm",
     "salesforce developer",
@@ -1889,6 +1889,7 @@ const keywords = [
     "zuora"
   ];
   
+  
 
 const exampleDataLever = {
     name: 'Fo Lina',
@@ -1912,26 +1913,48 @@ const exampleDataGreenhouse = {
     phone: '123-456-7890',
     devField1: 'Developer field value'
 };
+
 function parseSentencesFromHTML(html) {
-    const listItemSeparatedHtml = html.replace(/<\/li>/g, '•');
-    const test = listItemSeparatedHtml.replace(/<\/?[^>]+(>|$)/g, " ").replace(/\s+/g, ' ').trim();
-    const parts = test.split('•').map(part => part.trim()).filter(part => part.length > 0);
-    return parts;
+    // Use DOMParser to convert the HTML string into a document object.
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+
+    let rawTexts = [];
+
+    // Traverse the document and extract text content from block-level elements.
+    doc.body.querySelectorAll('p, li, div, h1, h2, h3, h4, h5, h6').forEach(elem => {
+        let text = elem.textContent.trim();
+        if (text) {
+            rawTexts.push(text);
+        }
+    });
+
+    // Combine all extracted texts and split into sentences.
+    const combinedText = rawTexts.join(' • ');
+    return parseSentencesFromText(combinedText);
 }
 
 function parseSentencesFromText(text) {
-    // This regular expression pattern is used to identify sentence boundaries.
-    // It considers punctuation marks such as period, exclamation point, and question mark,
-    // followed by one or more spaces as indicators of the end of a sentence.
-    const pattern = /[^.!?]+[.!?]+\s*/g;
-    
-    // The match() method is used to get all matches of the pattern in the given text.
-    // It returns an array of all matched strings.
-    const sentences = text.match(pattern);
-    
-    // If no sentences are found (i.e., the match() method returns null), 
-    // we return an empty array. Otherwise, we return the array of sentences.
-    return sentences ? sentences.map(sentence => sentence.trim()) : [];
+    // Split the text by '•' first to treat each list item as a separate sentence
+    let potentialSentences = text.split('•').map(s => s.trim()).filter(Boolean);
+
+    let sentences = [];
+
+    // Regular expression pattern for sentence boundaries
+    const pattern = /[^.!?]+[.!?]*/g;
+
+    // Parse each potential sentence further to identify actual sentence boundaries
+    potentialSentences.forEach(potentialSentence => {
+        const matches = potentialSentence.match(pattern);
+        if (matches) {
+            // For each match, remove the dot and push to sentences
+            matches.forEach(match => {
+                sentences.push(match.replace('•', '').trim());
+            });
+        }
+    });
+
+    return sentences;
 }
 
 
@@ -2126,12 +2149,20 @@ const handlers = {
         }
     },
     'greenhouse.io': () => {
+        
         const scriptTag = document.querySelector('script[type="application/ld+json"]');
         if (scriptTag) {
             try {
                 const jsonData = JSON.parse(scriptTag.textContent);
                 if (jsonData.description) {
-                    console.log(jsonData.description);
+                    const html = jsonData.description;
+                    sentences = parseSentencesFromHTML(html)
+                            console.log(
+                                filterSentences(
+                                    keywords,
+                                    sentences
+                                )
+                            )
                 } else {
                     console.log("The 'description' field is not found in the JSON data.");
                 }
